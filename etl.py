@@ -2,8 +2,8 @@ from datetime import datetime
 from dotenv import load_dotenv, find_dotenv
 import os
 from pyspark.sql import SparkSession
+import pyspark.sql.functions as F
 from pyspark.sql.functions import udf, col
-from pyspark.sql.functions import year, month, dayofmonth, hour, weekofyear, date_format
 
 load_dotenv()
 
@@ -12,7 +12,7 @@ aws_secret_access = os.environ['AWS_SECRET_ACCESS_KEY']
 
 def create_spark_session():
     """
-    Begin a spark session
+    Create a spark session
     """
     spark = SparkSession \
         .builder \
@@ -22,7 +22,7 @@ def create_spark_session():
 
 def process_song_data(spark, input_data, output_data):
     """
-    Extract data on songs and artists from the source s3 bucket and load onto the target s3 bucket
+    Extract data on songs and artists from the source s3 bucket and load onto the target s3 bucket.
     """
     # get filepath to song data file
     song_data = os.path.join(input_data, 'song_data/A/A/A/*.json')
@@ -31,14 +31,14 @@ def process_song_data(spark, input_data, output_data):
     df = spark.read.json(song_data)
 
     # extract columns to create songs table
-    songs_table = df[['song_id', 'title', 'artist_id', 'year', 'duration']].dropDuplicates(['song_id'])
+    songs_table = df.select('song_id', 'title', 'artist_id', 'year', 'duration').dropDuplicates(['song_id'])
 
     # write songs table to parquet files partitioned by year and artist
     songs_table.write.partitionBy('year', 'artist_id').parquet(os.path.join(output_data, 'songs.parquet'), 'overwrite')
     print('Created the songs table.')
 
     # extract columns to create artists table
-    artists_table = df['artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude'].dropDuplicates(['artist_id'])
+    artists_table = df.select('artist_id', 'artist_name', 'artist_location', 'artist_latitude', 'artist_longitude').dropDuplicates(['artist_id'])
 
     # write artists table to parquet files
     artists_table.write.parquet(os.path.join(output_data, 'artists.parquet'), 'overwrite')
@@ -47,7 +47,7 @@ def process_song_data(spark, input_data, output_data):
 
 def process_log_data(spark, input_data, output_data):
     """
-    Extract data on users, time and songplays from the event logs in the source s3 bucket and load onto the target s3 bucket
+    Extract data on users, time and songplays from the event logs in the source s3 bucket and load onto the target s3 bucket.
     """
     # get filepath to log data file
     log_data = os.path.join(input_data,"log_data/*/*/*.json")
@@ -56,10 +56,10 @@ def process_log_data(spark, input_data, output_data):
     df = spark.read.json(log_data)
 
     # filter by actions for song plays
-    df = df['ts', 'userId', 'level','sessionId', 'location', 'userAgent']
+    df = df.select('ts', 'userId', 'level','sessionId', 'location', 'userAgent')
 
     # extract columns for users table
-    users_table = df['userId', 'firstName', 'lastName', 'gender', 'level'].dropDuplicates(['user_id'])
+    users_table = df.select('userId', 'firstName', 'lastName', 'gender', 'level').dropDuplicates(['user_id'])
 
     # write users table to parquet files
     users_table.write.parquet(os.path.join(output_data, 'users.parquet'), 'overwrite')
@@ -75,12 +75,12 @@ def process_log_data(spark, input_data, output_data):
 
     # extract columns to create time table
     time_table = df.select(
-        col('datetime').alias('start_time'),
-        hour('datetime').alias('hour'),
-        dayofmonth('datetime').alias('day'),
-        weekofyear('datetime').alias('week'),
-        month('datetime').alias('month'),
-        year('datetime').alias('year')
+        F.col('datetime').alias('start_time'),
+        F.hour('datetime').alias('hour'),
+        F.dayofmonth('datetime').alias('day'),
+        F.weekofyear('datetime').alias('week'),
+        F.month('datetime').alias('month'),
+        F.year('datetime').alias('year')
     ).dropDuplicates(['start_time'])
 
     # write time table to parquet files partitioned by year and month
