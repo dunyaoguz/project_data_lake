@@ -12,7 +12,7 @@ SECRET = os.environ['AWS_SECRET_ACCESS_KEY']
 
 def create_spark_session():
     """
-    Create a spark session
+    Create a spark session.
     """
     spark = SparkSession \
         .builder \
@@ -22,7 +22,7 @@ def create_spark_session():
 
 def create_s3_bucket(bucket_name):
     """
-    Creates an s3 bucket with input name
+    Creates an s3 bucket with input name.
     """
     s3 = boto3.client('s3',
                       region_name='us-west-2',
@@ -59,7 +59,6 @@ def process_song_data(spark, input_data, output_data):
 
     # write artists table to parquet files
     artists_table.write.parquet(os.path.join(output_data, 'artists.parquet'), 'overwrite')
-
     print('Created the artists table.')
 
 
@@ -122,7 +121,6 @@ def process_log_data(spark, input_data, output_data):
                                 F.col('sessionId').alias('session_id'),
                                 'location',
                                 F.col('userAgent').alias('user_agent'))
-
     songplays_table = songplays_table.withColumn('songplay_id', monotonically_increasing_id())
 
     # write songplays table to parquet files partitioned by year and month
@@ -133,6 +131,7 @@ def process_log_data(spark, input_data, output_data):
 def main():
     create_s3_bucket('dunyas-lake')
     spark = create_spark_session()
+
     input_data = "s3a://udacity-dend/"
     output_data = "s3a://dunyas-lake/"
 
