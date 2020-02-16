@@ -10,11 +10,20 @@ In this project, I build a data lake hosted on S3 using Spark for a music strema
 
 ## Quick Start
 
-1. Create your .env file with the following structure:
+1. Obtain your AWS credentials from console. 
+
+2. Create your .env file with the following structure:
 
 ```
 AWS_ACCESS_KEY_ID= <insert access key>
 AWS_SECRET_ACCESS_KEY= <insert secret access key>
+DATA_LAKE_NAME= <insert a name for your data lake> 
+```
+3. Run the following commands.
+
+``` 
+cd project_data_lake
+python etl.py
 ```
 
 ## Tech Stack
