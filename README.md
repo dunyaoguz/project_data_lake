@@ -12,14 +12,22 @@ In this project, I build a data lake hosted on S3 using Spark for a music strema
 
 1. Obtain your AWS credentials from console. 
 
-2. Create your .env file with the following structure:
+2. Install dependencies.
+
+```
+pip install boto3
+pip install pyspark
+pip install python-dotenv
+```
+
+3. Create your .env file with the following structure:
 
 ```
 AWS_ACCESS_KEY_ID= <insert access key>
 AWS_SECRET_ACCESS_KEY= <insert secret access key>
 DATA_LAKE_NAME= <insert a name for your data lake> 
 ```
-3. Run the following commands.
+4. Run the following commands.
 
 ``` 
 cd project_data_lake
