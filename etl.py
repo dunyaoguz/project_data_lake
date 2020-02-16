@@ -9,6 +9,7 @@ load_dotenv()
 
 KEY = os.environ['AWS_ACCESS_KEY_ID']
 SECRET = os.environ['AWS_SECRET_ACCESS_KEY']
+DATA_LAKE_NAME = os.environ['AWS_SECRET_ACCESS_KEY']
 
 def create_spark_session():
     """
@@ -129,11 +130,11 @@ def process_log_data(spark, input_data, output_data):
 
 
 def main():
-    create_s3_bucket('dunyas-lake')
+    create_s3_bucket(DATA_LAKE_NAME)
     spark = create_spark_session()
 
     input_data = "s3a://udacity-dend/"
-    output_data = "s3a://dunyas-lake/"
+    output_data = f"s3a://{DATA_LAKE_NAME}/"
 
     process_song_data(spark, input_data, output_data)
     process_log_data(spark, input_data, output_data)
