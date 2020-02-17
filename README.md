@@ -33,6 +33,36 @@ DATA_LAKE_NAME= <insert a name for your data lake>
 cd project_data_lake
 python etl.py
 ```
+## Example Query
+
+Find the percentage of male and female users:
+
+```
+user_df = spark.read.parquet('user_data.parquet')
+user_df.registerTempTable("user_data")
+
+gender_paid_counts = spark.sql(
+    """
+    SELECT 
+        COUNT(*) GENDER_COUNT,
+        gender, 
+        ROUND(AVG(CASE WHEN level = 'paid' THEN 1 ELSE 0 END), 2) PAID_PERCENT
+    FROM user_data
+    GROUP BY 2
+    """).collect()
+t = PrettyTable(['GENDER', 'GENDER_COUNT', 'PAID_PERCENT'])
+for row in gender_paid_counts:
+    t.add_row([row.gender, row.GENDER_COUNT, row.PAID_PERCENT])
+print(t)
+```
+```
++--------+--------------+--------------+
+| GENDER | GENDER_COUNT | PAID_PERCENT |
++--------+--------------+--------------+
+|   F    |      60      |     0.25     |
+|   M    |      44      |     0.16     |
++--------+--------------+--------------+
+```
 
 ## Tech Stack
 * pyspark
