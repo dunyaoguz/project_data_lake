@@ -21,4 +21,4 @@ AWS_SECRET_ACCESS_KEY= <insert secret access key>
 * pyspark
 * boto3
 * dotenv
-* AWS
+* AWS 
