@@ -31,8 +31,6 @@ def create_s3_bucket(bucket_name):
                       aws_secret_access_key=SECRET)
     s3.create_bucket(Bucket=bucket_name, CreateBucketConfiguration={'LocationConstraint':'us-west-2'})
 
-create_s3_bucket('dunyas-lake-2')
-
 def process_song_data(spark, input_data, output_data):
     """
     Extract data on songs and artists from the source s3 bucket and load onto the target s3 bucket.
