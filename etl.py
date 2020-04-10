@@ -9,7 +9,7 @@ load_dotenv()
 
 KEY = os.environ['AWS_ACCESS_KEY_ID']
 SECRET = os.environ['AWS_SECRET_ACCESS_KEY']
-DATA_LAKE_NAME = os.environ['AWS_SECRET_ACCESS_KEY']
+DATA_LAKE_NAME = os.environ['DATA_LAKE_NAME']
 
 def create_spark_session():
     """
